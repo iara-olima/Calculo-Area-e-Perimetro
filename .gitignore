@@ -4,7 +4,7 @@
 
 # Ignorar arquivos de build
 *.o
-teste
+trabalho
 
 # Ignorar arquivos de log
 *.log
