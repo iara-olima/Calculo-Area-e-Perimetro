@@ -201,12 +201,15 @@ _start:
 	add eax,[valor4]
 	cmp eax, 0
 	je calculo_esfera
-	cmp [valor4],0
+	mov al,[valor4]
+	cmp al, 0
 	je valida_triangulo
     ; ==============[AJUSTA VALORES (teste)]=============== ;
 
-    ; ==============[Valida valores]=============== ;
-
+    ; ==============[Valida triangulo]=============== ;
+valida_triangulo:
+mov eax,1
+	int 0x80
     ; ==============[Caso esfera]=============== ;
 calculo_esfera:
     mov eax, 4
