@@ -54,12 +54,11 @@ lmsgresult	equ	$ - msgresult
 float_n dd 6.28
 
 section .bss
-    valor1 resb 1
-    valor2 resb 1
-    valor3 resb 1
-    valor4 resb 1
-
-    result resb 10
+    valor1 resd 1 ;resd reserva um double word
+    valor2 resd 1
+    valor3 resd 1
+    valor4 resd 1
+    result resd 10
 
 section .text
     global _start
@@ -113,8 +112,29 @@ _start:
     int 0x80
     jmp le_lado1
 
-    input_valido1:
-    ; continua com a coleta dos outros lados
+input_valido1:
+    mov ecx, 0x0
+    mov ebx, 0x0
+
+    mov bl, byte [valor1]     ; Primeiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0x64            ; Multiplica por 100
+    mov ecx, ebx              ; Armazena em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor1+1]   ; Segundo dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0xa             ; Multiplica por 10
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor1+2]   ; Terceiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov [valor1], ecx         ; Armazena o valor convertido de volta em valor1
+
+   mov ebx, 0x0
 
     ; PRINT + COLETA LADO 2 ;
     le_lado2:
@@ -143,7 +163,29 @@ _start:
     jmp le_lado2
 
     input_valido2:
-    ; continua com a coleta dos outros lados
+    mov ecx, 0x0
+    mov ebx, 0x0
+
+    mov bl, byte [valor2]     ; Primeiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0x64            ; Multiplica por 100
+    mov ecx, ebx              ; Armazena em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor2+1]   ; Segundo dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0xa             ; Multiplica por 10
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor2+2]   ; Terceiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov [valor2], ecx         ; Armazena o valor convertido de volta em valor2
+
+
+   mov ebx, 0x0
 
     ; PRINT + COLETA LADO 3 ;
     le_lado3:
@@ -172,7 +214,28 @@ _start:
     jmp le_lado3
 
     input_valido3:
-    ; continua com a coleta dos outros lados
+    mov ecx, 0x0
+    mov ebx, 0x0
+
+    mov bl, byte [valor3]     ; Primeiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0x64            ; Multiplica por 100
+    mov ecx, ebx              ; Armazena em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor3+1]   ; Segundo dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0xa             ; Multiplica por 10
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor3+2]   ; Terceiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov [valor3], ecx         ; Armazena o valor convertido de volta em valor3
+   mov ebx, 0x0
+
 
     ; PRINT + COLETA LADO 4 ;
     le_lado4:
@@ -201,6 +264,29 @@ _start:
     jmp le_lado4
 
     input_valido4:
+    mov ecx, 0x0
+    mov ebx, 0x0
+
+    mov bl, byte [valor4]     ; Primeiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0x64            ; Multiplica por 100
+    mov ecx, ebx              ; Armazena em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor4+1]   ; Segundo dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0xa             ; Multiplica por 10
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor4+2]   ; Terceiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov [valor4], ecx         ; Armazena o valor convertido de volta em valor4
+
+
+   mov ebx, 0x0
 
 	;soma os valores e verifica se da zero
     mov eax, [valor1]
@@ -208,7 +294,7 @@ _start:
     add eax, [valor3]
     add eax, [valor4]
     cmp eax, 0 ;n ta funcionando
-    je calculo_esfera
+    je le_raio
 
     ; verifica se valor4 é zero
     mov eax, [valor4]
@@ -222,7 +308,7 @@ valida_triangulo:
 mov eax,1
 	int 0x80
     ; ==============[Caso esfera]=============== ;
-calculo_esfera:
+le_raio:
     mov eax, 4
     mov ebx, 1
     mov ecx, raio
@@ -234,15 +320,45 @@ calculo_esfera:
     mov ecx, valor1
     mov edx, 8
     int 0x80
-; Carregar valor1 na FPU 
-fld dword [valor1] ; Carregar 6.28 na FPU 
-fld dword [float_n] ; Multiplicar os dois valores 
-fmul 
-; Armazenar o resultado em result 
-fstp dword [result]
-fld dword [result] 
-fistp dword [result]
-	
+
+    ; verifica se o numero não é negativo
+    mov al,[valor1]
+    cmp al,'-'
+    jne input_validor
+
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, erro
+    mov edx, msgerro
+    int 0x80
+    jmp le_raio
+
+input_validor:
+    mov ecx, 0x0
+    mov ebx, 0x0
+
+    mov bl, byte [valor1]     ; Primeiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0x64            ; Multiplica por 100
+    mov ecx, ebx              ; Armazena em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor1+1]   ; Segundo dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    imul ebx, 0xa             ; Multiplica por 10
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov ebx, 0x0              ; Limpa ebx
+    mov bl, byte [valor1+2]   ; Terceiro dígito
+    sub bl, '0'               ; Converte ASCII para decimal
+    add ecx, ebx              ; Adiciona ao valor em ecx
+
+    mov [valor1], ecx         ; Armazena o valor convertido de volta em valor1
+
+   mov ebx, 0x0
+
+calculo_esfera:
+
 jmp organizar
     ; ==============[Caso triangulo]=============== ;
 calculo_triangulo:
