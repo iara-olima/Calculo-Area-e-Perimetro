@@ -1,4 +1,3 @@
-;tenho que transoformar em decimal os numeros coletado
 section .data
     traco db '---------------------------------------------------------------',0xa
     msgtraco equ $ - traco
@@ -51,14 +50,14 @@ section .data
 msgresult	db	10,"Resultado: "
 lmsgresult	equ	$ - msgresult
 
-float_n dd 6.28
+float_n dq 6.28; Define o valor 6.28 como double-precision float
 
 section .bss
     valor1 resd 1 ;resd reserva um double word
     valor2 resd 1
     valor3 resd 1
     valor4 resd 1
-    result resd 10
+    result resb 10
 
 section .text
     global _start
@@ -355,10 +354,13 @@ input_validor:
 
     mov [valor1], ecx         ; Armazena o valor convertido de volta em valor1
 
-   mov ebx, 0x0
-
 calculo_esfera:
-
+;ta fazendo a mutiplicaçao mas nao consegui mostrar o resultado para conferir
+fild dword [valor1]
+fld qword [float_n]
+fmulp st1,st0
+fistp dword [valor1] ; Transfere o resultado para valor1 
+mov eax, [valor1]
 jmp organizar
     ; ==============[Caso triangulo]=============== ;
 calculo_triangulo:
@@ -382,59 +384,4 @@ clr_registradores:
     mov eax, 1 ; finaliza o sistema
     int 0x80
 
-organizar:
-; EAX/100000
-	mov edx, 0x0			; zera o edx para nao entrar na divisão
-	mov ebx, 0x186A0		; move 100000 para ebx
-	div ebx				; divide EAX/EBX
-	add al, '0'			; transforma em hexa
-	mov byte[result], al		; move para o resultado
-	mov eax, edx			; move o resto para eax
 
-; EAX/10000
-	mov edx, 0x0			; zera o edx
-	mov ebx, 0x2710			; move 10000 para ebx
-	div ebx				; divide EAX/EBX (o EDX está zerado)
-	add al, '0'			; transforma em hexa
-	mov byte[result+1], al		; move para o resultado
-	mov eax, edx			; move o resto para eax
-
-; EAX/1000
-	mov edx, 0x0			; zera o edx
-	mov bx, 0x3E8			; move 1000 para bx
-	div bx				; divide AX/BX (o DX está zerado)
-	add al, '0'			; transforma em hexa
-	mov byte[result+2], al		; move para o resultado
-	mov ax, dx			; move o resto para ax
-
-; AX/100
-	mov edx, 0x0			; zera o edx
-	mov bl, 0x64			; move 100 para bl
-	div bl				; divide AX/BL
-	add al, '0'			; transforma em hexa
-	mov byte[result+3], al		; move para o resultado
-	mov bl, ah			; move o resto para bl
-
-; AL/10
-	mov eax,0x0			; zera o eax
-	mov al, bl			; move o resto (em bl) para al
-	mov bl, 0xa			; move 10 para bl
-	div bl				; divide AL/BL
-	add al, '0'			; transforma em hexa	
-	mov byte[result+4], al		; move para o resultado
-
-; PRINT DO RESULTADO
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, msgresult
-	mov edx, lmsgresult
-	int 0x80
-
-	mov eax, 4
-	mov ebx, 1
-	mov ecx, result
-	mov edx, 6
-	int 0x80
-
-	mov eax,1
-int 0x80
