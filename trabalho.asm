@@ -1,3 +1,4 @@
+;tenho que transoformar em decimal os numeros coletado
 section .data
     traco db '---------------------------------------------------------------',0xa
     msgtraco equ $ - traco
@@ -32,25 +33,32 @@ section .data
     perimetro db 'Perímetro: ', 0xa
     msgperimetro equ $ - perimetro
 
-    equilatero db 'Triangulo Equilatero!', 0xa
+    equilatero db 'Triangulo Equilatero', 0xa
     msgequilatero equ $ - equilatero
 
-    isosceles db 'Triangulo Isosceles!', 0xa
+    isosceles db 'Triangulo Isosceles', 0xa
     msgisosceles equ $ - isosceles
 
-    escaleno db 'Triangulo Escaleno!', 0xa
+    escaleno db 'Triangulo Escaleno', 0xa
     msgescaleno equ $ - escaleno
 
-    retangulo db 'Retangulo!', 0xa
+    retangulo db 'Retangulo', 0xa
     msgretangulo equ $ - retangulo
+	
+	quadrado db 'Quadrado', 0xa
+    msgquadrado equ $ - quadrado
+
+msgresult	db	10,"Resultado: "
+lmsgresult	equ	$ - msgresult
+
+float_n dd 6.28
 
 section .bss
-    valor1 resb 4
-    valor2 resb 4
-    valor3 resb 4
-    valor4 resb 4
+    valor1 resb 1
+    valor2 resb 1
+    valor3 resb 1
+    valor4 resb 1
 
-    var1 resb 1
     result resb 10
 
 section .text
@@ -195,15 +203,18 @@ _start:
     input_valido4:
 
 	;soma os valores e verifica se da zero
-	mov eax,[valor1]
-	add eax,[valor2]
-	add eax,[valor3]
-	add eax,[valor4]
-	cmp eax, 0
-	je calculo_esfera
-	mov al,[valor4]
-	cmp al, 0
-	je valida_triangulo
+    mov eax, [valor1]
+    add eax, [valor2]
+    add eax, [valor3]
+    add eax, [valor4]
+    cmp eax, 0 ;n ta funcionando
+    je calculo_esfera
+
+    ; verifica se valor4 é zero
+    mov eax, [valor4]
+    cmp eax, 0
+    je valida_triangulo
+
     ; ==============[AJUSTA VALORES (teste)]=============== ;
 
     ; ==============[Valida triangulo]=============== ;
@@ -223,11 +234,16 @@ calculo_esfera:
     mov ecx, valor1
     mov edx, 8
     int 0x80
-
-    ; finaliza o sistema;
-    mov eax, 1
-    int 0x80
-
+; Carregar valor1 na FPU 
+fld dword [valor1] ; Carregar 6.28 na FPU 
+fld dword [float_n] ; Multiplicar os dois valores 
+fmul 
+; Armazenar o resultado em result 
+fstp dword [result]
+fld dword [result] 
+fistp dword [result]
+	
+jmp organizar
     ; ==============[Caso triangulo]=============== ;
 calculo_triangulo:
     ; finaliza o sistema;
@@ -250,3 +266,59 @@ clr_registradores:
     mov eax, 1 ; finaliza o sistema
     int 0x80
 
+organizar:
+; EAX/100000
+	mov edx, 0x0			; zera o edx para nao entrar na divisão
+	mov ebx, 0x186A0		; move 100000 para ebx
+	div ebx				; divide EAX/EBX
+	add al, '0'			; transforma em hexa
+	mov byte[result], al		; move para o resultado
+	mov eax, edx			; move o resto para eax
+
+; EAX/10000
+	mov edx, 0x0			; zera o edx
+	mov ebx, 0x2710			; move 10000 para ebx
+	div ebx				; divide EAX/EBX (o EDX está zerado)
+	add al, '0'			; transforma em hexa
+	mov byte[result+1], al		; move para o resultado
+	mov eax, edx			; move o resto para eax
+
+; EAX/1000
+	mov edx, 0x0			; zera o edx
+	mov bx, 0x3E8			; move 1000 para bx
+	div bx				; divide AX/BX (o DX está zerado)
+	add al, '0'			; transforma em hexa
+	mov byte[result+2], al		; move para o resultado
+	mov ax, dx			; move o resto para ax
+
+; AX/100
+	mov edx, 0x0			; zera o edx
+	mov bl, 0x64			; move 100 para bl
+	div bl				; divide AX/BL
+	add al, '0'			; transforma em hexa
+	mov byte[result+3], al		; move para o resultado
+	mov bl, ah			; move o resto para bl
+
+; AL/10
+	mov eax,0x0			; zera o eax
+	mov al, bl			; move o resto (em bl) para al
+	mov bl, 0xa			; move 10 para bl
+	div bl				; divide AL/BL
+	add al, '0'			; transforma em hexa	
+	mov byte[result+4], al		; move para o resultado
+
+; PRINT DO RESULTADO
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, msgresult
+	mov edx, lmsgresult
+	int 0x80
+
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, result
+	mov edx, 6
+	int 0x80
+
+	mov eax,1
+int 0x80
