@@ -2,6 +2,9 @@ section .data
     traco db '---------------------------------------------------------------',0xa
     msgtraco equ $ - traco
 
+invalido db 'Insercao Invalida', 0xa
+msginvalido equ $ - invalido
+
     erro db 'Nao eh permitido numero negativo', 0xa
     msgerro equ $ - erro
 
@@ -298,7 +301,48 @@ input_valido1:
     cmp eax, 0
     je valida_triangulo
 
-    ; ==============[AJUSTA VALORES (teste)]=============== ;
+; ===================[Verifica se é Retângulo]================= ; 
+mov ax, [valor1] 
+cmp ax, [valor3] 
+jne verifica_invalido 
+mov ax, [valor2] 
+cmp ax, [valor4] 
+jne verifica_invalido 
+; Se os lados opostos são iguais, verificar se é um quadrado 
+mov ax, [valor1] 
+cmp ax, [valor2] 
+jne imprime_retangulo 
+mov ax, [valor2] 
+cmp ax, [valor3] 
+jne imprime_retangulo 
+; É um quadrado 
+mov eax, 4 
+mov ebx, 1 
+mov ecx, quadrado 
+mov edx, msgquadrado 
+int 0x80 
+mov eax,1
+int 0x80 
+
+imprime_retangulo: 
+; É um retângulo 
+mov eax, 4 
+mov ebx, 1 
+mov ecx, retangulo 
+mov edx, msgretangulo 
+int 0x80 
+mov eax,1
+int 0x80 
+
+verifica_invalido: 
+; Inserção inválida 
+mov eax, 4 
+mov ebx, 1 
+mov ecx, invalido 
+mov edx, msginvalido
+int 0x80
+mov eax,1
+int 0x80
 
     ; ==============[Valida triangulo]=============== ;
 valida_triangulo:
