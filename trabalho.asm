@@ -315,13 +315,55 @@ add ax,[valor3]
 cmp ax,[valor1]
 jle erro_tri
 
+ ; ===============[Classificacao triangulo]============= ;
+tipo_triangulo: 
+mov ax, [valor1] 
+cmp ax, [valor2] 
+jne verifica_isosceles 
+mov ax, [valor2] 
+cmp ax, [valor3] 
+jne verifica_isosceles 
+; Se todos os lados são iguais 
+mov eax, 4 
+mov ebx, 1
+mov ecx, equilatero
+mov edx, msgequilatero
+int 0x80 
+mov eax,1
+int 0x80
+
+verifica_isosceles: 
+mov ax, [valor1] 
+cmp ax, [valor2] 
+je imprime_isosceles 
+mov ax, [valor1] 
+cmp ax, [valor3] 
+je imprime_isosceles 
+mov ax, [valor2] 
+cmp ax, [valor3] 
+je imprime_isosceles 
+; Se todos os lados são diferentes 
+mov eax, 4 
+mov ebx, 1 
+mov ecx, escaleno 
+mov edx, msgescaleno 
+int 0x80
+mov eax,1
+int 0x80
+
+imprime_isosceles: 
+; Se dois lados são iguais 
+mov eax, 4  
+mov ebx, 1 
+mov ecx, isosceles 
+mov edx, msgisosceles 
+int 0x80
  ; ==============[Caso triangulo]=============== ;
 calculo_triangulo:
 mov ax,[valor1]
 add ax,[valor2]
 add ax,[valor3]
 mov [perimetro],ax
-    ; finaliza o sistema;
     mov eax, 1
     int 0x80
 
