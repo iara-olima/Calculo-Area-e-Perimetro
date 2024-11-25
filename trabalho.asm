@@ -332,8 +332,7 @@ mov ebx, 1
 mov ecx, quadrado 
 mov edx, msgquadrado 
 int 0x80 
-mov eax,1
-int 0x80 
+jmp calculo_quadrado 
 
 imprime_retangulo: 
 ; É um retângulo 
@@ -342,8 +341,7 @@ mov ebx, 1
 mov ecx, retangulo 
 mov edx, msgretangulo 
 int 0x80 
-mov eax,1
-int 0x80 
+jmp calculo_retangulo
 
 verifica_invalido: 
 ; Inserção inválida 
@@ -490,9 +488,28 @@ mov eax, [valor1]
 
     ; ==============[Caso retangulo/quadrado]=============== ;
 calculo_retangulo:
+mov eax,[valor1]
+add eax,[valor2]
+add eax,[valor3]
+add eax,[valor4]
+mov [perimetro],eax
+mov eax,[valor1]
+;mul eax,[valor4] -erro
+mov [area],eax
+
     ; finaliza o sistema;
     mov eax, 1
     int 0x80
+
+calculo_quadrado:
+mov eax,[valor1]
+;mul eax,4 - erro
+mov [perimetro],eax
+mov eax,[valor1]
+;mul eax,[valor1] - erro
+
+mov eax, 1
+int 0x80
 
     ; ==============[Finalização + subrotinas]=============== ;
 clr_registradores:
