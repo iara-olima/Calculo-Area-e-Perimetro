@@ -1,3 +1,14 @@
+;Pendencias:
+;calcular perimetro quadrado
+;calcular perimetro triangulo
+;calcular comprimento circulo
+;calcular area quadrado
+;calcular area triangulo
+;calcular area circulo
+; !!!! Mostrar resultados !!!!
+
+; - Todos os direcionamentos estao feitos (eu acho) -
+
 section .data
     traco db '---------------------------------------------------------------',0xa
     msgtraco equ $ - traco
