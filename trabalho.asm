@@ -1,5 +1,6 @@
 ;Pendencias:
-;calcular perimetro quadrado - feito
+;calcular perimetro quadrado
+;calcular perimetro retangulo - feito
 ;calcular perimetro triangulo - feito
 ;calcular comprimento circulo
 ;calcular area quadrado
