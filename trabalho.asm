@@ -26,11 +26,8 @@ section .data
     raio db 'Informe o raio: ', 0xa
     msgraio equ $ - raio
 
-    area db 'Área: ', 0xa
-    msgarea equ $ - area
-
-    perimetro db 'Perímetro: ', 0xa
-    msgperimetro equ $ - perimetro
+    resultado_perimetro db 'Perímetro: ', 0xa
+    msgperimetro equ $ - resultado_perimetro
 
     equilatero db 'Triangulo Equilatero', 0xa
     msgequilatero equ $ - equilatero
@@ -47,8 +44,8 @@ section .data
 	quadrado db 'Quadrado', 0xa
     msgquadrado equ $ - quadrado
 
-msgresult	db	10,"Resultado: "
-lmsgresult	equ	$ - msgresult
+resultado_area	db	10,"Area: "
+msgresultadoarea equ	$ - resultado_area
 
 float_n dq 6.28; Define o valor 6.28 como double-precision float
 
@@ -57,7 +54,8 @@ section .bss
     valor2 resd 1
     valor3 resd 1
     valor4 resd 1
-    result resb 10
+    area resb 10
+	perimetro resb 10
 
 section .text
     global _start
@@ -292,7 +290,7 @@ input_valido1:
     add eax, [valor2]
     add eax, [valor3]
     add eax, [valor4]
-    cmp eax, 0 ;n ta funcionando
+    cmp eax, 0
     je le_raio
 
     ; verifica se valor4 é zero
@@ -304,8 +302,38 @@ input_valido1:
 
     ; ==============[Valida triangulo]=============== ;
 valida_triangulo:
+mov ax, [valor1]
+add ax, [valor2]
+cmp ax,[valor3]
+jle erro_tri
+mov ax,[valor1]
+add ax,[valor3]
+cmp ax,[valor2]
+jle erro_tri
+mov ax,[valor2]
+add ax,[valor3]
+cmp ax,[valor1]
+jle erro_tri
+
+ ; ==============[Caso triangulo]=============== ;
+calculo_triangulo:
+mov ax,[valor1]
+add ax,[valor2]
+add ax,[valor3]
+mov [perimetro],ax
+    ; finaliza o sistema;
+    mov eax, 1
+    int 0x80
+
+erro_tri:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, erro_triangulo
+    mov edx, msgerrotriangulo
+    int 0x80
 mov eax,1
-	int 0x80
+int 0x80
+
     ; ==============[Caso esfera]=============== ;
 le_raio:
     mov eax, 4
@@ -361,12 +389,7 @@ fld qword [float_n]
 fmulp st1,st0
 fistp dword [valor1] ; Transfere o resultado para valor1 
 mov eax, [valor1]
-jmp organizar
-    ; ==============[Caso triangulo]=============== ;
-calculo_triangulo:
-    ; finaliza o sistema;
-    mov eax, 1
-    int 0x80
+;jmp organizar
 
     ; ==============[Caso retangulo/quadrado]=============== ;
 calculo_retangulo:
