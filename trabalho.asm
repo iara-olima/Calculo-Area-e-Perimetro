@@ -6,71 +6,84 @@
 ;calcular area quadrado
 ;calcular area triangulo
 ;calcular area circulo
-; !!!! Mostrar resultados !!!!
+; mostrar area do retangulo - feito
+;mostrar perimetro do triangulo - feito
+;mostrar area do quadrado
+;mostrar area do circulo
+;mostrar area do triangulo
+;mostrar perimetro do circulo
+;mostrar perimetro do quadrado
+;mostrar perimetro do retangulo
 
 ; - Todos os direcionamentos estao feitos (eu acho) -
 
 section .data
-    traco db '---------------------------------------------------------------',0xa
-    msgtraco equ $ - traco
+traco db '---------------------------------------------------------------',0xa
+msgtraco equ $ - traco
 
 invalido db 'Insercao Invalida', 0xa
 msginvalido equ $ - invalido
 
-    erro db 'Nao eh permitido numero negativo', 0xa
-    msgerro equ $ - erro
+erro db 'Nao eh permitido numero negativo. Insira novamente: ', 0xa
+msgerro equ $ - erro
 
-	erro_triangulo db 'Triangulo invalido', 0xa
-	msgerrotriangulo equ $ - erro_triangulo
+erro_triangulo db 'Triangulo invalido', 0xa
+msgerrotriangulo equ $ - erro_triangulo
 
-    info db 'CALCULO DO PERÍMETRO E DA ÁREA (OBS: DIGITE 3 ALGARISMOS)',0xa
-    msginfo equ $ - info
+info db 'CALCULO DO PERÍMETRO E DA ÁREA (OBS: DIGITE 3 ALGARISMOS)',0xa
+msginfo equ $ - info
 
-    lado1 db 'Informe lado 1: ', 0xa
-    msglado1 equ $ - lado1
+lado1 db 'Informe lado 1 (base, caso seja triangulo): ', 0xa
+msglado1 equ $ - lado1
 
-    lado2 db 'Informe lado 2: ', 0xa
-    msglado2 equ $ - lado2
+lado2 db 'Informe lado 2: ', 0xa
+msglado2 equ $ - lado2
 
-    lado3 db 'Informe lado 3: ', 0xa
-    msglado3 equ $ - lado3
+lado3 db 'Informe lado 3: ', 0xa
+msglado3 equ $ - lado3
 
-    lado4 db 'Informe lado 4: ', 0xa
-    msglado4 equ $ - lado4
+lado4 db 'Informe lado 4: ', 0xa
+msglado4 equ $ - lado4
 
-    raio db 'Informe o raio: ', 0xa
-    msgraio equ $ - raio
+altura db 'Informe a altura: ', 0xa
+msgaltura equ $ - altura
 
-    resultado_perimetro db 'Perímetro: ', 0xa
-    msgperimetro equ $ - resultado_perimetro
+raio db 'Informe o raio: ', 0xa
+msgraio equ $ - raio
 
-    equilatero db 'Triangulo Equilatero', 0xa
-    msgequilatero equ $ - equilatero
+resultado_perimetro db 'Perímetro: ', 0xa
+msgperimetro equ $ - resultado_perimetro
 
-    isosceles db 'Triangulo Isosceles', 0xa
-    msgisosceles equ $ - isosceles
+equilatero db 'Triangulo Equilatero', 0xa
+msgequilatero equ $ - equilatero
 
-    escaleno db 'Triangulo Escaleno', 0xa
-    msgescaleno equ $ - escaleno
+isosceles db 'Triangulo Isosceles', 0xa
+msgisosceles equ $ - isosceles
 
-    retangulo db 'Retangulo', 0xa
-    msgretangulo equ $ - retangulo
+escaleno db 'Triangulo Escaleno', 0xa
+msgescaleno equ $ - escaleno
+
+retangulo db 'Retangulo', 0xa
+msgretangulo equ $ - retangulo
 	
-	quadrado db 'Quadrado', 0xa
-    msgquadrado equ $ - quadrado
+quadrado db 'Quadrado', 0xa
+msgquadrado equ $ - quadrado
 
 resultado_area	db	10,"Area: "
 msgresultadoarea equ	$ - resultado_area
 
-float_n dq 6.28; Define o valor 6.28 como double-precision float
+;float_n dq 6.28; Define o valor 6.28 como double-precision float
 
 section .bss
-    valor1 resd 1 ;resd reserva um double word
-    valor2 resd 1
-    valor3 resd 1
-    valor4 resd 1
-    area resb 10
-	perimetro resb 10
+input resd 1
+valor1 resd 1 ;resd reserva um double word
+valor2 resd 1
+valor3 resd 1
+valor4 resd 1
+alt resd 1
+perimetro resb 10
+area resb 10
+resultado resb 10
 
 section .text
     global _start
@@ -98,235 +111,79 @@ _start:
     ; ==============[coleta valores (lado)]=============== ;
 
     ; PRINT + COLETA LADO 1 ;
+mov eax, 4
+mov ebx, 1
+mov ecx, lado1
+mov edx, msglado1
+int 0x80
 
-    le_lado1:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, lado1
-    mov edx, msglado1
-    int 0x80
-
-    mov eax, 3
-    mov ebx, 0
-    mov ecx, valor1
-    mov edx, 8
-    int 0x80
-
-    ; verifica se o numero não é negativo
-    mov al,[valor1]
-    cmp al,'-'
-    jne input_valido1
-
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, erro
-    mov edx, msgerro
-    int 0x80
-    jmp le_lado1
-
-input_valido1:
-    mov ecx, 0x0
-    mov ebx, 0x0
-
-    mov bl, byte [valor1]     ; Primeiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0x64            ; Multiplica por 100
-    mov ecx, ebx              ; Armazena em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor1+1]   ; Segundo dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0xa             ; Multiplica por 10
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor1+2]   ; Terceiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov [valor1], ecx         ; Armazena o valor convertido de volta em valor1
-
-   mov ebx, 0x0
+call inputvalido
+mov eax,[input]
+mov [valor1],eax
 
     ; PRINT + COLETA LADO 2 ;
-    le_lado2:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, lado2
-    mov edx, msglado2
-    int 0x80
+mov eax, 4
+mov ebx, 1
+mov ecx, lado2
+mov edx, msglado2
+int 0x80
 
-    mov eax, 3
-    mov ebx, 0
-    mov ecx, valor2
-    mov edx, 8
-    int 0x80
-
-    ; verifica se o numero não é negativo
-    mov al,[valor2]
-    cmp al,'-'
-    jne input_valido2
-
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, erro
-    mov edx, msgerro
-    int 0x80
-    jmp le_lado2
-
-    input_valido2:
-    mov ecx, 0x0
-    mov ebx, 0x0
-
-    mov bl, byte [valor2]     ; Primeiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0x64            ; Multiplica por 100
-    mov ecx, ebx              ; Armazena em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor2+1]   ; Segundo dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0xa             ; Multiplica por 10
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor2+2]   ; Terceiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov [valor2], ecx         ; Armazena o valor convertido de volta em valor2
-
-
-   mov ebx, 0x0
+call inputvalido
+mov eax,[input]
+mov [valor2],eax
 
     ; PRINT + COLETA LADO 3 ;
-    le_lado3:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, lado3
-    mov edx, msglado3
-    int 0x80
+mov eax, 4
+mov ebx, 1
+mov ecx, lado3
+mov edx, msglado3
+int 0x80
 
-    mov eax, 3
-    mov ebx, 0
-    mov ecx, valor3
-    mov edx, 8
-    int 0x80
-
-    ; verifica se o numero não é negativo
-    mov al,[valor3]
-    cmp al,'-'
-    jne input_valido3
-
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, erro
-    mov edx, msgerro
-    int 0x80
-    jmp le_lado3
-
-    input_valido3:
-    mov ecx, 0x0
-    mov ebx, 0x0
-
-    mov bl, byte [valor3]     ; Primeiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0x64            ; Multiplica por 100
-    mov ecx, ebx              ; Armazena em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor3+1]   ; Segundo dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0xa             ; Multiplica por 10
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor3+2]   ; Terceiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov [valor3], ecx         ; Armazena o valor convertido de volta em valor3
-   mov ebx, 0x0
-
+call inputvalido
+mov eax,[input]
+mov [valor3],eax
 
     ; PRINT + COLETA LADO 4 ;
-    le_lado4:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, lado4
-    mov edx, msglado4
-    int 0x80
-
-    mov eax, 3
-    mov ebx, 0
-    mov ecx, valor4
-    mov edx, 8
-    int 0x80
-
-    ; verifica se o numero não é negativo
-    mov al,[valor4]
-    cmp al,'-'
-    jne input_valido4
-
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, erro
-    mov edx, msgerro
-    int 0x80
-    jmp le_lado4
-
-    input_valido4:
-    mov ecx, 0x0
-    mov ebx, 0x0
-
-    mov bl, byte [valor4]     ; Primeiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0x64            ; Multiplica por 100
-    mov ecx, ebx              ; Armazena em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor4+1]   ; Segundo dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0xa             ; Multiplica por 10
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor4+2]   ; Terceiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov [valor4], ecx         ; Armazena o valor convertido de volta em valor4
+mov eax, 4
+mov ebx, 1
+mov ecx, lado4
+mov edx, msglado4
+int 0x80
 
 
-   mov ebx, 0x0
+call inputvalido
+mov eax,[input]
+mov [valor4],eax
 
-	;soma os valores e verifica se da zero
-    mov eax, [valor1]
-    add eax, [valor2]
-    add eax, [valor3]
-    add eax, [valor4]
-    cmp eax, 0
-    je le_raio
+; ================[Verificações para desvios]===========================
+;soma os valores e verifica se da zero
+mov eax, [valor1]
+add eax, [valor2]
+add eax, [valor3]
+add eax, [valor4]
+cmp eax, 0
+je le_raio
 
-    ; verifica se valor4 é zero
-    mov eax, [valor4]
-    cmp eax, 0
-    je valida_triangulo
+; verifica se valor4 é zero
+mov eax, [valor4]
+cmp eax, 0
+je valida_triangulo
 
 ; ===================[Verifica se é Retângulo]================= ; 
 mov ax, [valor1] 
 cmp ax, [valor3] 
-jne verifica_invalido 
+jne erro_invalido 
 mov ax, [valor2] 
 cmp ax, [valor4] 
-jne verifica_invalido 
+jne erro_invalido 
 ; Se os lados opostos são iguais, verificar se é um quadrado 
 mov ax, [valor1] 
 cmp ax, [valor2] 
 jne imprime_retangulo 
 mov ax, [valor2] 
 cmp ax, [valor3] 
-jne imprime_retangulo 
+jne imprime_retangulo
+ 
 ; É um quadrado 
 mov eax, 4 
 mov ebx, 1 
@@ -344,7 +201,7 @@ mov edx, msgretangulo
 int 0x80 
 jmp calculo_retangulo
 
-verifica_invalido: 
+erro_invalido: 
 ; Inserção inválida 
 mov eax, 4 
 mov ebx, 1 
@@ -414,112 +271,191 @@ mov edx, msgisosceles
 int 0x80
  ; ==============[Caso triangulo]=============== ;
 calculo_triangulo:
-mov ax,[valor1]
-add ax,[valor2]
-add ax,[valor3]
-mov [perimetro],ax
-    mov eax, 1
-    int 0x80
+call calcula_perimetro
+jmp organizar
 
 erro_tri:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, erro_triangulo
-    mov edx, msgerrotriangulo
-    int 0x80
+mov eax, 4
+mov ebx, 1
+mov ecx, erro_triangulo
+mov edx, msgerrotriangulo
+int 0x80
 mov eax,1
 int 0x80
 
     ; ==============[Caso esfera]=============== ;
 le_raio:
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, raio
-    mov edx, msgraio
-    int 0x80
+mov eax, 4
+mov ebx, 1
+mov ecx, raio
+mov edx, msgraio
+int 0x80
 
-    mov eax, 3
-    mov ebx, 0
-    mov ecx, valor1
-    mov edx, 8
-    int 0x80
-
-    ; verifica se o numero não é negativo
-    mov al,[valor1]
-    cmp al,'-'
-    jne input_validor
-
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, erro
-    mov edx, msgerro
-    int 0x80
-    jmp le_raio
-
-input_validor:
-    mov ecx, 0x0
-    mov ebx, 0x0
-
-    mov bl, byte [valor1]     ; Primeiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0x64            ; Multiplica por 100
-    mov ecx, ebx              ; Armazena em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor1+1]   ; Segundo dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    imul ebx, 0xa             ; Multiplica por 10
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov ebx, 0x0              ; Limpa ebx
-    mov bl, byte [valor1+2]   ; Terceiro dígito
-    sub bl, '0'               ; Converte ASCII para decimal
-    add ecx, ebx              ; Adiciona ao valor em ecx
-
-    mov [valor1], ecx         ; Armazena o valor convertido de volta em valor1
+call inputvalido
+mov eax,[input]
+mov [valor1],eax
 
 calculo_esfera:
-;ta fazendo a mutiplicaçao mas nao consegui mostrar o resultado para conferir
-fild dword [valor1]
-fld qword [float_n]
-fmulp st1,st0
-fistp dword [valor1] ; Transfere o resultado para valor1 
-mov eax, [valor1]
-;jmp organizar
+
 
     ; ==============[Caso retangulo/quadrado]=============== ;
 calculo_retangulo:
-mov eax,[valor1]
-add eax,[valor2]
-add eax,[valor3]
-add eax,[valor4]
-mov [perimetro],eax
-mov eax,[valor1]
-;mul eax,[valor4] -erro
-mov [area],eax
+call calcula_perimetro
+mov eax, 4
+mov ebx, 1
+mov ecx, resultado_perimetro
+mov edx, msgperimetro
+int 0x80
+mov eax,[perimetro]
+call organizar
 
-    ; finaliza o sistema;
-    mov eax, 1
-    int 0x80
 
+mov eax,4
+mov ebx,1
+mov ecx, resultado_area
+mov edx, msgresultadoarea
+int 0x80
+
+mov eax,[valor1]
+mov ebx,[valor4]
+imul eax,ebx
+call organizar
+
+mov eax,1
+int 0x80
 calculo_quadrado:
-mov eax,[valor1]
-;mul eax,4 - erro
-mov [perimetro],eax
-mov eax,[valor1]
-;mul eax,[valor1] - erro
+call calcula_perimetro
+mov eax, 4
+mov ebx, 1
+mov ecx, resultado_perimetro
+mov edx, msgperimetro
+int 0x80
+mov eax,[perimetro]
+call organizar
 
-mov eax, 1
+mov eax,4
+mov ebx,1
+mov ecx, resultado_area
+mov edx, msgresultadoarea
+int 0x80
+
+mov eax,[valor1]
+imul eax,4 ;multiplica por 4
+call organizar
+
+mov eax,1
 int 0x80
 
     ; ==============[Finalização + subrotinas]=============== ;
 clr_registradores:
-    mov eax, 0
-    mov ebx, 0
-    mov ecx, 0
-    mov edx, 0
+mov eax, 0
+mov ebx, 0
+mov ecx, 0
+mov edx, 0
+ret
 
-    mov eax, 1 ; finaliza o sistema
-    int 0x80
+inputvalido:
+mov eax, 3
+mov ebx, 0
+mov ecx, input
+mov edx, 8
+int 0x80
+
+;verifica se o numero eh negativo
+mov al,[input]
+cmp al,'-'
+jne converte
+erroneg:
+mov eax,4
+mov ebx,1
+mov ecx,erro
+mov edx,msgerro
+int 0x80
+jmp erroneg
+
+converte:
+mov ecx, 0x0
+mov ebx, 0x0
+mov bl, byte [input]     ; Primeiro dígito
+sub bl, '0'               ; Converte ASCII para decimal
+imul ebx, 0x64            ; Multiplica por 100
+mov ecx, ebx              ; Armazena em ecx
+mov ebx, 0x0              ; Limpa ebx
+mov bl, byte [input+1]   ; Segundo dígito
+sub bl, '0'               ; Converte ASCII para decimal
+imul ebx, 0xa             ; Multiplica por 10
+add ecx, ebx              ; Adiciona ao valor em ecx
+mov ebx, 0x0              ; Limpa ebx
+mov bl, byte [input+2]   ; Terceiro dígito
+sub bl, '0'               ; Converte ASCII para decimal
+add ecx, ebx              ; Adiciona ao valor em ecx
+mov [input], ecx         ; Armazena o valor convertido de volta no input
+ret
+
+calcula_perimetro:
+mov eax,[valor1]
+add eax,[valor2]
+add eax, [valor3]
+add eax, [valor4]
+mov [perimetro],eax
+
+ret	
+
+organizar:
+; O RESULTADO DE TODAS AS OPERAÇÃO ESTÁ ARMAZENADO NO EAX.
+; Nessa parte iremos organizar o resultado para podermos imprimir na tela, ou seja,
+; pegaremos cada digíto dividindo por (100.000, 10.000, 1.000, 100, 10) e transformaremos em hexa.
+; Em seguida, moveremos para o seu byte respectivo dentro do [result].
+
+; EAX/100000
+	mov edx, 0x0			; zera o edx para nao entrar na divisão
+	mov ebx, 0x186A0		; move 100000 para ebx
+	div ebx				; divide EAX/EBX
+	add al, '0'			; transforma em hexa
+	mov byte[resultado], al		; move para o resultado
+	mov eax, edx			; move o resto para eax
+
+; EAX/10000
+	mov edx, 0x0			; zera o edx
+	mov ebx, 0x2710			; move 10000 para ebx
+	div ebx				; divide EAX/EBX (o EDX está zerado)
+	add al, '0'			; transforma em hexa
+	mov byte[resultado+1], al		; move para o resultado
+	mov eax, edx			; move o resto para eax
+
+; EAX/1000
+	mov edx, 0x0			; zera o edx
+	mov bx, 0x3E8			; move 1000 para bx
+	div bx				; divide AX/BX (o DX está zerado)
+	add al, '0'			; transforma em hexa
+	mov byte[resultado+2], al		; move para o resultado
+	mov ax, dx			; move o resto para ax
+
+; AX/100
+	mov edx, 0x0			; zera o edx
+	mov bl, 0x64			; move 100 para bl
+	div bl				; divide AX/BL
+	add al, '0'			; transforma em hexa
+	mov byte [resultado+3], al		; move para o resultado
+	mov bl, ah			; move o resto para bl
+
+; AL/10
+	mov eax,0x0			; zera o eax
+	mov al, bl			; move o resto (em bl) para al
+	mov bl, 0xa			; move 10 para bl
+	div bl				; divide AL/BL
+	add al, '0'			; transforma em hexa	
+	mov byte[resultado+4], al		; move para o resultado
 
 
+; AH = RESTO
+	add ah, '0'			; transforma em hexa	
+	mov byte[resultado+5], ah		; move para o resultado
+
+
+mov eax, 4
+	mov ebx, 1
+	mov ecx, resultado
+	mov edx, 6
+	int 0x80	
+ret
