@@ -67,7 +67,7 @@ area resb 10
 resultado resb 10
 
 section .text
-    global _start
+	global _start
 
 _start:
     ; ==============[imprime inicio]=============== ;
@@ -321,12 +321,11 @@ mov edx, msgresultadoarea
 int 0x80
 
 mov eax,[valor1]
-imul eax,4 ;multiplica por 4
+imul eax,[valor1]
 call organizar
 
 mov eax,1
 int 0x80
-
     ; ==============[Finalização + subrotinas]=============== ;
 clr_registradores:
 mov eax, 0
