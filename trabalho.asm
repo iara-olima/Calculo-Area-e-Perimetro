@@ -1,22 +1,3 @@
-;Pendencias:
-;calcular perimetro quadrado
-;calcular perimetro retangulo - feito
-;calcular perimetro triangulo - feito
-;calcular comprimento circulo
-;calcular area quadrado
-;calcular area triangulo
-;calcular area circulo
-; mostrar area do retangulo - feito
-;mostrar perimetro do triangulo - feito
-;mostrar area do quadrado
-;mostrar area do circulo
-;mostrar area do triangulo
-;mostrar perimetro do circulo
-;mostrar perimetro do quadrado
-;mostrar perimetro do retangulo
-
-; - Todos os direcionamentos estao feitos (eu acho) -
-
 section .data
 traco db '---------------------------------------------------------------',0xa
 msgtraco equ $ - traco
