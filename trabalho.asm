@@ -207,6 +207,19 @@ add ax,[valor3]
 cmp ax,[valor1]
 jle erro_tri
 
+mov eax, 4 
+mov ebx, 1 
+mov ecx, altura 
+mov edx, msgaltura
+int 0x80
+
+
+call inputvalido
+mov eax,[input]
+mov [alt],eax
+
+
+
  ; ===============[Classificacao triangulo]============= ;
 tipo_triangulo: 
 mov ax, [valor1] 
@@ -221,8 +234,7 @@ mov ebx, 1
 mov ecx, equilatero
 mov edx, msgequilatero
 int 0x80 
-mov eax,1
-int 0x80
+jmp calculo_triangulo
 
 verifica_isosceles: 
 mov ax, [valor1] 
@@ -240,8 +252,7 @@ mov ebx, 1
 mov ecx, escaleno 
 mov edx, msgescaleno 
 int 0x80
-mov eax,1
-int 0x80
+jmp calculo_triangulo
 
 imprime_isosceles: 
 ; Se dois lados são iguais 
@@ -253,7 +264,19 @@ int 0x80
  ; ==============[Caso triangulo]=============== ;
 calculo_triangulo:
 call calcula_perimetro
+call mostra_perimetro
+mov eax, [perimetro]
+call organizar
+call mostra_area
+mov eax, [valor1]
+imul eax, [alt]
+mov edx,0
+mov ecx, 2
+div ecx
 jmp organizar
+
+mov eax,1
+int 0x80
 
 erro_tri:
 mov eax, 4
@@ -282,20 +305,11 @@ calculo_esfera:
     ; ==============[Caso retangulo/quadrado]=============== ;
 calculo_retangulo:
 call calcula_perimetro
-mov eax, 4
-mov ebx, 1
-mov ecx, resultado_perimetro
-mov edx, msgperimetro
-int 0x80
+call mostra_perimetro
 mov eax,[perimetro]
 call organizar
 
-
-mov eax,4
-mov ebx,1
-mov ecx, resultado_area
-mov edx, msgresultadoarea
-int 0x80
+call mostra_area
 
 mov eax,[valor1]
 mov ebx,[valor4]
@@ -306,19 +320,11 @@ mov eax,1
 int 0x80
 calculo_quadrado:
 call calcula_perimetro
-mov eax, 4
-mov ebx, 1
-mov ecx, resultado_perimetro
-mov edx, msgperimetro
-int 0x80
+call mostra_perimetro
 mov eax,[perimetro]
 call organizar
 
-mov eax,4
-mov ebx,1
-mov ecx, resultado_area
-mov edx, msgresultadoarea
-int 0x80
+call mostra_area
 
 mov eax,[valor1]
 imul eax,[valor1]
@@ -380,6 +386,22 @@ add eax, [valor4]
 mov [perimetro],eax
 
 ret	
+
+mostra_perimetro:
+mov eax, 4
+mov ebx, 1
+mov ecx, resultado_perimetro
+mov edx, msgperimetro
+int 0x80
+ret
+
+mostra_area:
+mov eax,4
+mov ebx,1
+mov ecx, resultado_area
+mov edx, msgresultadoarea
+int 0x80
+ret
 
 organizar:
 ; O RESULTADO DE TODAS AS OPERAÇÃO ESTÁ ARMAZENADO NO EAX.
