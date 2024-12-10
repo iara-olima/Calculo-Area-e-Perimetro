@@ -50,6 +50,9 @@ msgretangulo equ $ - retangulo
 quadrado db 'Quadrado', 0xa
 msgquadrado equ $ - quadrado
 
+comprimento db 'Comprimento: ',0xa
+msgcomprimento equ $ - comprimento
+
 resultado_area	db	10,"Area: "
 msgresultadoarea equ	$ - resultado_area
 
@@ -72,11 +75,7 @@ section .text
 
 _start:
     ; ==============[imprime inicio]=============== ;
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, traco
-    mov edx, msgtraco
-    int 0x80
+call mostra_traco    
 
     mov eax, 4
     mov ebx, 1
@@ -84,12 +83,7 @@ _start:
     mov edx, msginfo
     int 0x80
 
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, traco
-    mov edx, msgtraco
-    int 0x80
-
+call mostra_traco
     ; ==============[coleta valores (lado)]=============== ;
 
     ; PRINT + COLETA LADO 1 ;
@@ -136,6 +130,7 @@ int 0x80
 call inputvalido
 mov eax,[input]
 mov [valor4],eax
+
 
 ; ================[Verificações para desvios]===========================
 ;soma os valores e verifica se da zero
@@ -307,11 +302,36 @@ int 0x80
 
 call inputvalido
 mov eax,[input]
-mov [valor1],eax
 
 calculo_esfera:
+imul eax, 628
+mov edx,0
+mov ecx,100
+idiv ecx
+mov [n_inteiro],eax
+mov [n_decimal],edx
+mov eax, 4
+mov ebx, 1
+mov ecx, comprimento
+mov edx, msgcomprimento
+int 0x80
+mov eax, [n_inteiro]
+call organizar
 
+call mostra_area
+mov eax,[input]
+imul eax,[input]
+imul eax, 314
+mov edx,0
+mov ecx,100
+idiv ecx
+mov [n_inteiro],eax
+mov [n_decimal],edx
+mov eax,[n_inteiro]
+call organizar
 
+mov eax,1
+int 0x80
     ; ==============[Caso retangulo/quadrado]=============== ;
 calculo_retangulo:
 call calcula_perimetro
@@ -325,7 +345,6 @@ mov eax,[valor1]
 mov ebx,[valor4]
 imul eax,ebx
 call organizar
-
 mov eax,1
 int 0x80
 calculo_quadrado:
@@ -343,11 +362,12 @@ call organizar
 mov eax,1
 int 0x80
     ; ==============[Finalização + subrotinas]=============== ;
-clr_registradores:
-mov eax, 0
-mov ebx, 0
-mov ecx, 0
-mov edx, 0
+mostra_traco:
+mov eax, 4
+mov ebx, 1
+mov ecx, traco
+mov edx, msgtraco
+int 0x80
 ret
 
 inputvalido:
@@ -361,13 +381,12 @@ int 0x80
 mov al,[input]
 cmp al,'-'
 jne converte
-erroneg:
 mov eax,4
 mov ebx,1
 mov ecx,erro
 mov edx,msgerro
 int 0x80
-jmp erroneg
+jmp inputvalido
 
 converte:
 mov ecx, 0x0
