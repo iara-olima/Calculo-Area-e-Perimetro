@@ -53,6 +53,7 @@ msgquadrado equ $ - quadrado
 resultado_area	db	10,"Area: "
 msgresultadoarea equ	$ - resultado_area
 
+n_decimal dd 0
 ;float_n dq 6.28; Define o valor 6.28 como double-precision float
 
 section .bss
@@ -65,7 +66,7 @@ alt resd 1
 perimetro resb 10
 area resb 10
 resultado resb 10
-
+n_inteiro resd 1
 section .text
 	global _start
 
@@ -272,8 +273,17 @@ mov eax, [valor1]
 imul eax, [alt]
 mov edx,0
 mov ecx, 2
-div ecx
-jmp organizar
+idiv ecx
+mov [n_inteiro],eax
+mov eax,edx
+imul eax,100
+mov edx,0
+mov ecx,2
+idiv ecx
+mov [n_decimal],eax
+mov eax,[n_inteiro]
+call organizar
+
 
 mov eax,1
 int 0x80
@@ -454,10 +464,22 @@ organizar:
 	add ah, '0'			; transforma em hexa	
 	mov byte[resultado+5], ah		; move para o resultado
 
+mov al,','
+mov byte[resultado+6],al
 
-mov eax, 4
+mov eax,[n_decimal]
+mov edx,0
+mov ecx,10
+div ecx
+add al,'0'
+mov byte[resultado+7],al
+mov eax,edx
+add al,'0'
+mov byte[resultado+8],al
+	mov eax, 4
 	mov ebx, 1
 	mov ecx, resultado
-	mov edx, 6
+	mov edx, 9
 	int 0x80	
+
 ret
