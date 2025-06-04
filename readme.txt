@@ -1,15 +1,15 @@
-# 🚀 Meu Projeto Incrível
+# 🌞 Bom dia, projeto!
 
-Uma breve descrição do que seu projeto faz e por que ele é incrível.
+Este é um projeto de exemplo com um GIF animado incorporado diretamente do [Tenor](https://tenor.com).
 
-## ✨ Demonstração
+## 👋 Saudação animada
 
-Veja o projeto em ação:
+Nada melhor do que começar com um "Bom dia"! Veja o GIF abaixo:
 
-![Demonstração do Projeto](https://tenor.com/pt-BR/view/good-morning-gif-3057228474552902029)
+![Bom dia](https://media.tenor.com/IyL1F3Xp0mYAAAAC/good-morning.gif)
 
-## 🔧 Instalação
+## 📦 Instalação
 
-1. Clone o repositório:
+1. Clone este repositório:
    ```bash
    git clone https://github.com/seu-usuario/seu-repositorio.git
