@@ -1,14 +1,14 @@
-# 🌞 Bom dia, projeto!
+# 🌅 Bom Dia, Projeto!
 
-Este é um projeto de exemplo com um GIF animado incorporado diretamente do [Tenor](https://tenor.com).
+Este é um projeto de exemplo com uma imagem incorporada para dar um toque mais visual e agradável logo de cara.
 
-## 👋 Saudação animada
+## 📷 Imagem de saudação
 
-Nada melhor do que começar com um "Bom dia"! Veja o GIF abaixo:
+![Bom dia](https://th.bing.com/th/id/OIP.6cBTiqWzzJH-mvcJKVSkZwHaE8?pid=ImgDetMain)
 
-![Bom dia](https://media.tenor.com/IyL1F3Xp0mYAAAAC/good-morning.gif)
+> Imagem via Bing Imagens
 
-## 📦 Instalação
+## ⚙️ Instalação
 
 1. Clone este repositório:
    ```bash
