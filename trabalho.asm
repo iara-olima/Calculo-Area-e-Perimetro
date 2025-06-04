@@ -17,8 +17,6 @@ msginfo equ $ - info
 lado1 db 'Informe lado 1 (base, caso seja triangulo): ', 0xa
 msglado1 equ $ - lado1
 
-;mudanças aleatoriassssssss
-
 lado2 db 'Informe lado 2: ', 0xa
 msglado2 equ $ - lado2
 
