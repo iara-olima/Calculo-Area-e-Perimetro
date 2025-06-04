@@ -1,4 +1,4 @@
-# 🌅 ahan? quem? oruan!
+# 🌅 ahan? quem? oruam!
 ![Bom dia](https://th.bing.com/th/id/OIP.6cBTiqWzzJH-mvcJKVSkZwHaE8?pid=ImgDetMain)
 ### Resumo do oruan: 
 # 🎤 Oruam – Resumo do Rapper Brasileiro
